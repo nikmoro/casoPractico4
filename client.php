@@ -1,42 +1,37 @@
 <?php
-    header('Content-Type: text/xml; charset=UTF-8');
-
-    require_once 'nusoap.php';
-    $client = new nusoap_client("http://localhost/cp4/server.php");
-
-    $error = $client -> GetError();
-    if($error)
-        echo "<h2>Error en el constructor</h2> <pre>" . $error . "</pre>";
+    $cliente = new SoapClient(null, array(
+    'location' => "http://localhost/cp4/server.php",
+    'uri' => "http://localhost/cp4/server.php",
+    'trace' => 1
+    ));
 ?>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body>
+        <table border="1" class="">
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Edad</th>
+                <th>Teléfono</th>
+            </tr>
+        </table>
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <title>Paciente</title>
-</head>
-<body>
-    <?php
-        $result = $client -> call("obtenerPaciente");
-
-        if($client -> fault)
-        {
-            echo "<h2>Fault</h2><pre>";
-            print_r($result);
-            echo"</pre>";
-        }
-        else
-        {
-            $error = $client -> getError();
-            if ($error) {
-                echo "<h2>Error</h2> <pre>" . $error . "</pre>";
-            }
-            else
+        <?php
+            try
             {
-                echo "<h2>PACIENTES</h2><pre>";
-                echo $result;
-                echo"</pre>";
+                echo $respuesta = $cliente -> __soapCall("obtenerPaciente", []);
             }
-        }
-    ?>
-</body>
-</html>
+            catch (SoapFault $ex)
+            {
+                echo $ex -> getMessage().PHP_EOL;
+            }
+        ?>
+    </body>
+    </html>

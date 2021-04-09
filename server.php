@@ -1,20 +1,34 @@
 <?php
-    phpinfo();
-    
-    require_once 'nusoap.php';
-
-    function obtenerPaciente()
+    class Paciente
     {
-        $con = mysqli_conect("localhost","root","","cp4") or die ("Error al conectarse a la Base de datos");
-        $query = "SELECT * FROM paciente";
-        $result = mysqli_query($con, $query);
-        $registro = mysqli_fetch_assoc($result);
-        return $registro;
+        public function obtenerPaciente()
+        {
+            $registros = "";
+
+            $con = new mysqli("localhost","root","","cp4") or die ("Error al conectarse a la Base de datos");
+            $query = "SELECT * FROM paciente";
+            $result = mysqli_query($con, $query);
+
+            foreach ($result as $datos) {
+                $registros .= ("<tr>");
+                $registros .= ("<td>" . $datos['id'] . "</td>");
+                $registros .= ("<td>" . $datos['nombre'] . "</td>");
+                $registros .= ("<td>" . $datos['edad'] . "</td>");
+                $registros .= ("<td>" . $datos['telefono'] . "</td>");
+                $registros .= ("</tr>");
+            }
+            return $registros;
+        }
     }
-
-    $server = new soap_server();
-    $server -> register("obtenerPaciente");
-
-    if(!isset($HTTP_RAW_POST_DATA)) $HTTP_RAW_POST_DATA = file_get_contents('php://input');
-    $server -> service($HTTP_RAW_POST_DATA);
+    try
+    {
+        $server = new Soapserver(
+            null, ['uri' => 'http://localhost/cp4/server.php']
+        );
+        $server -> setClass("Paciente");
+        $server -> handle();
+    }
+    catch(SoapFault $e){
+        print $e -> faultstring;
+    }
 ?>
