@@ -1,1 +1,13 @@
-lib/
+changelog
+class.nusoap_base.php
+nusoapmime.php
+nusoap.php
+class.xmlschema.php
+class.wsdlcache.php
+class.wsdl.php
+class.soap_val.php
+class.soapclient.php
+class.soap_transport_http.php
+class.soap_server.php
+class.soap_parser.php
+class.soap_fault.php

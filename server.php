@@ -1,20 +1,20 @@
 <?php
+    phpinfo();
+    
+    require_once 'nusoap.php';
 
-require_once ('lib/nusoap.php');
+    function obtenerPaciente()
+    {
+        $con = mysqli_conect("localhost","root","","cp4") or die ("Error al conectarse a la Base de datos");
+        $query = "SELECT * FROM paciente";
+        $result = mysqli_query($con, $query);
+        $registro = mysqli_fetch_assoc($result);
+        return $registro;
+    }
 
-// Conexión y seleción de la BD
-$con = mysql_conect("localhost","root","") or die ("Error al conectarse a la Base de datos");
-mysql_select_db("cp4", $con) or die ("Error al seleccionar la Base de datos");
+    $server = new soap_server();
+    $server -> register("obtenerPaciente");
 
-$server = new soap_server();
-
-function ConectarDB(){
-    /* conectamos a la bd */
-    $link = mysql_connect('localhost','root','') or die('No se puede conectar a la BD');
-    mysql_select_db('PacienteDB',$link) or die('No se puede seleccionar la BD');
-}
-
-function Insertar(){
-
-}
+    if(!isset($HTTP_RAW_POST_DATA)) $HTTP_RAW_POST_DATA = file_get_contents('php://input');
+    $server -> service($HTTP_RAW_POST_DATA);
 ?>
